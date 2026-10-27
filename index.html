@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA en Sistemas de Información Empresarial | Fátima Robreño González</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #080c14;
+            --bg-card: #0f172a;
+            --bg-card-hover: #1e293b;
+            --accent-cyan: #00f2fe;
+            --accent-blue: #4facfe;
+            --accent-purple: #7f53ac;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --border-glow: rgba(0, 242, 254, 0.25);
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+        }
+
+        /* BARRA DE NAVEGACIÓN FIJA */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0.4rem 0;
+        }
+
+        .navbar-menu a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-menu a:hover, .navbar-menu a.active {
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.1);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* HEADER / HERO SECTION */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.7));
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+            color: #080c14;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-radius: 20px;
+            margin-bottom: 1.2rem;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta-info {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .meta-info span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* DASHBOARD METRICS / KPIS */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-cyan);
+        }
+
+        .kpi-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* SECCIONES DE CONTENIDO */
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.2rem;
+            margin-bottom: 2rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .section-card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 25px var(--border-glow);
+        }
+
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        .section-title i {
+            color: var(--accent-blue);
+        }
+
+        p {
+            color: #cbd5e1;
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.2rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .feature-item strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-item p {
+            margin-bottom: 0;
+            font-size: 0.98rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.98rem;
+        }
+
+        th {
+            background-color: rgba(30, 41, 59, 0.9);
+            color: var(--accent-cyan);
+            padding: 1rem 1.2rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            color: #cbd5e1;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(15, 23, 42, 0.5);
+        }
+
+        tr:hover {
+            background-color: rgba(30, 41, 59, 0.4);
+        }
+
+        /* ACORDEONES INTERACTIVOS */
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: rgba(30, 41, 59, 0.6);
+            color: var(--text-main);
+            border: none;
+            text-align: left;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            font-family: var(--font-sans);
+        }
+
+        .accordion-header:hover {
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .accordion-header i.chevron {
+            transition: transform 0.3s ease;
+            color: var(--accent-blue);
+        }
+
+        .accordion-header.active i.chevron {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            padding: 0 1.5rem;
+            background: var(--bg-card);
+        }
+
+        .accordion-content.open {
+            padding: 1.5rem;
+            max-height: 1000px;
+        }
+
+        .highlight-box {
+            background: rgba(127, 83, 172, 0.15);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN PRINCIPAL -->
+    <nav class="navbar">
+        <a href="#inicio" class="navbar-brand">
+            <i class="fa-solid fa-brain"></i> IA en MIS
+        </a>
+        <ul class="navbar-menu">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#evolucion">Evolución</a></li>
+            <li><a href="#automatizacion">Automatización</a></li>
+            <li><a href="#desafios">Desafíos</a></li>
+            <li><a href="#matriz">Matriz</a></li>
+            <li><a href="#precision">Precisión</a></li>
+            <li><a href="#preguntas">10 Preguntas</a></li>
+        </ul>
+    </nav>
+
+    <div class="container" id="inicio">
+        <!-- Encabezado Principal -->
+        <header>
+            <div class="badge">Sistemas de Información Administrativa</div>
+            <h1>INFORME DE INVESTIGACIÓN: TRANSFORMACIÓN ORGANIZACIONAL Y ADOPCIÓN DE INTELIGENCIA ARTIFICIAL EN SISTEMAS DE INFORMACIÓN EMPRESARIAL</h1>
+            <div class="meta-info">
+                <span><i class="fa-solid fa-user"></i> Fátima Robreño González</span>
+                <span><i class="fa-solid fa-graduation-cap"></i> Informática Administrativa</span>
+                <span><i class="fa-solid fa-building-columns"></i> Universidad Michoacana de San Nicolás de Hidalgo</span>
+            </div>
+        </header>
+
+        <!-- TARJETAS DE DATOS / KPIS INTERACTIVOS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-number">&lt; 15%</div>
+                <div class="kpi-label">Empresas con IA Agéntica en Producción</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-number">40%</div>
+                <div class="kpi-label">Proyección de Adopción para 2026</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-number">10</div>
+                <div class="kpi-label">Análisis Dialécticos Estratégicos</div>
+            </div>
+        </div>
+
+        <main>
+            <!-- 1. Evolución Arquitectónica -->
+            <div class="section-card" id="evolucion">
+                <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> 1. Evolución Arquitectónica: De Herramientas Pasivas a Agentes Autónomos</h2>
+                <p>La integración de la Inteligencia Artificial (IA) en los Sistemas de Información Gerencial (MIS), ERP y CRM ha evolucionado desde asistentes conversacionales monolíticos e hiper-específicos (chatbots reactivos) hacia sistemas de agentes autónomos orquestados.</p>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <strong>Herramientas de primera generación:</strong>
+                        <p>Enfocadas en el análisis descriptivo/predictivo y generación aislada de texto o código.</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Sistemas agénticos (Agentic AI):</strong>
+                        <p>Capaces de planificar, tomar decisiones con autonomía delimitada y ejecutar flujos de trabajo completos entre múltiples aplicaciones empresariales sin intervención humana continua.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 2. Automatización de Procesos e Integración de Datos -->
+            <div class="section-card" id="automatizacion">
+                <h2 class="section-title"><i class="fa-solid fa-gears"></i> 2. Automatización de Procesos e Integración de Datos</h2>
+                <p>La madurez de la IA en la infraestructura empresarial requiere conectar modelos de lenguaje con repositorios organizacionales (Data Lakes, ERPs):</p>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <strong>Procesamiento de datos no estructurados:</strong>
+                        <p>Automatización de reconciliaciones financieras, lectura de facturas y auditorías en tiempo real mediante conectores API y arquitecturas RAG (Retrieval-Augmented Generation).</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Orquestación Multi-agente:</strong>
+                        <p>Interconexión de agentes especializados que coordinan desde la predicción de demanda en la cadena de suministro hasta el reabastecimiento automático en sistemas como SAP o Microsoft Dynamics.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 3. Desafíos y Barreras de Implementación -->
+            <div class="section-card" id="desafios">
+                <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> 3. Desafíos y Barreras de Implementación</h2>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <strong>Privacidad y Gobernanza:</strong>
+                        <p>Riesgos de exfiltración de datos corporativos, gobernanza de modelos y vacíos normativos en el uso de datos sensibles de clientes.</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Costos de Infraestructura y Cómputo:</strong>
+                        <p>Elevados costos recurrentes en consumo de APIs/tokens, migración a entornos híbridos/nube y requerimientos de hardware especializado.</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Resistencia Organizacional y Brecha de Talento:</strong>
+                        <p>La falta de competencias técnicas en el personal y la escasez de perfiles de gobernanza operacional (Agentic Ops) retrasan el paso de pruebas piloto a producción.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 4. Matriz Comparativa -->
+            <div class="section-card" id="matriz">
+                <h2 class="section-title"><i class="fa-solid fa-table-columns"></i> 4. Matriz Comparativa de Madurez Tecnológica</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dimensión</th>
+                                <th>Fase Inicial (IA Experimental / Asistiva)</th>
+                                <th>Etapa de Madurez Operativa (IA Agéntica / Integrada)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Interacción</strong></td>
+                                <td>Comandos de texto (prompts) y asistentes pasivos.</td>
+                                <td>Ejecución autónoma multi-paso orientada a objetivos.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Arquitectura de Datos</strong></td>
+                                <td>Silos de datos aislados y procesamiento por lotes.</td>
+                                <td>Integración en tiempo real con ERP/CRM vía APIs.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Toma de Decisiones</strong></td>
+                                <td>Sugerencias dirigidas al usuario (Human-in-the-loop constante).</td>
+                                <td>Autonomía delimitada con supervisión por excepción.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Escalabilidad</strong></td>
+                                <td>Casos de uso aislados (redacción, resúmenes).</td>
+                                <td>Orquestación de flujos de trabajo multi-departamentales.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. Protocolo de Precisión -->
+            <div class="section-card" id="precision">
+                <h2 class="section-title"><i class="fa-solid fa-bullseye"></i> 5. Protocolo de Precisión: Hechos Comprobados vs. Proyecciones</h2>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <strong>Hechos Comprobados:</strong>
+                        <p>Menos del 15% de las organizaciones globales tienen actualmente agentes de IA desplegados en producción completa; la mayoría de las iniciativas permanecen en fases piloto o de prueba de concepto.</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Proyecciones de Mercado:</strong>
+                        <p>Firmas de analistas como Gartner proyectan que el 40% de las aplicaciones empresariales incorporarán agentes de IA específicos por tarea para finales de 2026.</p>
+                    </li>
+                    <li class="feature-item">
+                        <strong>Evidencia Faltante:</strong>
+                        <p>No existe aún suficiente evidencia estadística longitudinal que demuestre el Retorno de Inversión (ROI) neto consolidado a largo plazo tras amortizar los costos de mantenimiento de infraestructura agéntica a gran escala.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 6. Cuestionario Dialéctico de 10 Preguntas -->
+            <div class="section-card" id="preguntas">
+                <h2 class="section-title"><i class="fa-solid fa-comments"></i> 6. Módulo Dialéctico: Análisis Estratégico (10 Preguntas Clave)</h2>
+                <p>Haz clic en cada pregunta para desplegar el análisis correspondiente:</p>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>1. ¿En qué se diferencia la automatización tradicional (RPA) de los agentes autónomos y en qué casos no conviene usarlos?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>Diferencia:</strong> El RPA ejecuta instrucciones rígidas bajo la lógica "si pasa A, haz B" en entornos 100% predictivos. Los agentes autónomos analizan contexto, adaptan sus pasos ante imprevistos y toman decisiones no lineales.</p>
+                            <div class="highlight-box">
+                                <strong>Cuándo NO usarlos:</strong> No conviene usar agentes en procesos deterministas con cero tolerancia al error (como el cálculo de nómina o conciliaciones contables reguladas), donde la variabilidad representa un riesgo legal o financiero.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>2. ¿Quién asume la responsabilidad técnica y administrativa si un agente autónomo comete un error operacional grave?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>Responsabilidad Técnica:</strong> Recae en la Dirección de TI o el Líder de Arquitectura de IA, encargados de la observabilidad, los límites de ejecución (guardrails) y las rutas de respaldo.</p>
+                            <p><strong>Responsabilidad Administrativa y Legal:</strong> Recae íntegramente en la alta dirección (CEO/COO) y en la persona jurídica de la empresa. Legalmente, un algoritmo no es sujeto de derechos u obligaciones; la empresa asume el impacto de las acciones tomadas por sus agentes.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>3. ¿Cómo altera la autonomía de la IA la jerarquía de una organización y cómo reducir la resistencia al cambio?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>Alteración Jerárquica:</strong> Aplana los mandos medios dedicados a la supervisión operativa rutinaria, desplazando el valor hacia la orquestación y estrategia de procesos.</p>
+                            <p><strong>Mitigación de Resistencia:</strong> Mediante programas de reconversión laboral (upskilling), involucrando a los empleados en la fase de entrenamiento del agente como "asistentes supervisores".</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>4. ¿Cómo balancear el uso de la IA en la nube para no generar alta dependencia técnica ni deuda tecnológica?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p>Para no generar alta dependencia técnica ni deuda tecnológica, las empresas deben adoptar arquitecturas multimodelo con capas de abstracción (API Gateways) que permitan cambiar de proveedor sin reescribir todo el código, combinando modelos locales ligeros para tareas sencillas con la nube sólo para razonamiento complejo.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>5. ¿Qué cuidados básicos debe tener una empresa para que la IA no exponga la información privada de los clientes?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p>Implementación de técnicas de anonimización y enmascaramiento de PII (Información de Identificación Personal) antes de enviar datos al modelo, optar por instancias empresariales privadas (VPC) con cláusulas de "no entrenamiento" y aplicar filtros de DLP (Data Loss Prevention).</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>6. ¿Por qué por una empresa pequeña es más difícil ver si realmente le conviene invertir en la IA a corto plazo?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p>A las PYMES les cuesta ver retorno inmediato porque los costos de integración a medida son muy altos respecto a su volumen de operaciones. Les conviene adoptar soluciones SaaS empaquetadas con IA integrada en lugar de construir agentes desde cero.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>7. ¿Qué procesos administrativos sí se pueden automatizar por completo y cuáles siempre deberían requerir la revisión de una persona?</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p><strong>100% Automatizables:</strong> Clasificación de tickets de soporte, extracción de datos de facturas estandarizadas, generación de borradores de respuesta.</p>
+                            <p><strong>Requieren Revisión Humana:</strong> Aprobación de créditos de alto monto, despidos o contrataciones, negociaciones estratégicas y decisiones con dilemas éticos o legales.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>8. Resumen Ejecutivo</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p class="highlight-box">La adopción de IA empresarial está migrando de asistentes conversacionales pasivos a agentes autónomos interconectados con sistemas de información centrales (ERP/CRM). Si bien optimiza procesos complejos, exige una rigurosa gobernanza de privacidad, gestión de costos de cómputo y reconversión de perfiles organizacionales.</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>9. Expresión Académica Formal</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p style="font-family: serif; font-style: italic;">"La transición paradigmática hacia la Inteligencia Artificial Agéntica en la arquitectura de Sistemas de Información Gerencial representa un desplazamiento desde la automatización estocástica asistida hacia la orquestación autónoma multi-entorno, supeditada a vectores de gobernanza de datos y mitigación de fricción estructural."</p>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <button class="accordion-header">
+                            <span>10. Explicación Didáctica Básica</span>
+                            <i class="fa-solid fa-chevron-down chevron"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <p>🎈 <em>"Imagínate que antes la IA era como un robot al que le dabas un lápiz y solo escribía lo que le decías palabra por palabra. Ahora, la IA es como un superayudante que puede abrir el refrigerador, buscar la receta, hacer el pastel y servírtelo en la mesa él solito, pero sus jefes siempre tienen que revisar que no use sal en vez de azúcar."</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Fátima Robreño González — Informe de Investigación sobre IA en Sistemas de Información Administrativa</p>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                button.classList.toggle('active');
+                content.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
